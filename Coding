@@ -1,0 +1,170 @@
+library(readxl)
+dataset<-read_excel("/Users/thunchanok2539/MFUS_for_MRes.xls")
+dataset$labels_hier3[which(dataset$labels_hier3=="0")]<-"3" ## change hier3 0 to 3
+dataset$labels_hier2[which(dataset$labels_hier2=="0")]<-"3" ## change hier2 0 to 3
+###scatter plot fibroscanVSswresult
+plot(x=dataset$`fibroscan(m/s)`,y=dataset$`SWE(m/s)`,xlab="Fibroscan", ylab="SWE")
+title(main="Plot between Fibroscan and SWE")
+abline(lm(dataset$`fibroscan(m/s)`~dataset$`SWE(m/s)`))
+###spearman correlation test
+cor.test(dataset$`fibroscan(m/s)`,dataset$`SWE(m/s)`,method='spearman')
+###boxplot, stiffness vs angio hier2
+install.packages("ggpubr")
+library("ggpubr")
+angio.stiff<-as.data.frame(rep(dataset$labels_hier2,times=2))
+a=data.frame(angio=dataset$`fibroscan(m/s)`)
+b=data.frame(angio=dataset$`SWE(m/s)`)
+ab=rbind(a,b)
+angio.stiff[,2]<-ab
+f=data.frame(measurement=rep(c("fibroscan"),times=144))
+s=data.frame(measurement=rep(c("SWE"),times=144))
+measurement=rbind(f,s)
+angio.stiff[,3]<-measurement
+colnames(angio.stiff)<-c("angiogenesis","stiffness","measurement")
+angio.stiff<-na.omit(angio.stiff)
+angio.stiff1<-angio.stiff
+angio.stiff1$angiogenesis <- as.character(angio.stiff1$angiogenesis)
+angio.stiff1$angiogenesis[angio.stiff1$angiogenesis == "1"] <- "low"
+angio.stiff1$angiogenesis[angio.stiff1$angiogenesis == "3"] <- "high"
+angio.stiff1$angiogenesis <- as.factor(angio.stiff1$angiogenesis)
+ggboxplot(angio.stiff1, x = "angiogenesis", y = "stiffness", color = "measurement",palette = c("#00AFBB", "#E7B800"))
+
+
+###boxplot, stiffness vs angio hier3
+angio.stiff3<-as.data.frame(rep(dataset$labels_hier3,times=2))
+a=data.frame(angio=dataset$`fibroscan(m/s)`)
+b=data.frame(angio=dataset$`SWE(m/s)`)
+ab=rbind(a,b)
+angio.stiff3[,2]<-ab
+f=data.frame(measurement=rep(c("fibroscan"),times=144))
+s=data.frame(measurement=rep(c("SWE"),times=144))
+measurement=rbind(f,s)
+angio.stiff3[,3]<-measurement
+colnames(angio.stiff3)<-c("angiogenesis","stiffness","measurement")
+angio.stiff3<-na.omit(angio.stiff3)
+angio.stiff1<-angio.stiff3
+angio.stiff1$angiogenesis <- as.character(angio.stiff1$angiogenesis)
+angio.stiff1$angiogenesis[angio.stiff1$angiogenesis == "1"] <- "low"
+angio.stiff1$angiogenesis[angio.stiff1$angiogenesis == "3"] <- "high"
+angio.stiff1$angiogenesis[angio.stiff1$angiogenesis == "2"] <- "intermediate"
+angio.stiff1$angiogenesis <- as.factor(angio.stiff1$angiogenesis)
+ggboxplot(angio.stiff1, x = "angiogenesis", y = "stiffness", color = "measurement",palette = c("#00AFBB", "#E7B800","#00FF00"))
+
+###dataset without HCC
+dataset.nohcc<-dataset[which(dataset$hcclabel==0),]
+
+###boxplot, stiffness vs angio hier2, no HCC
+angio.stiff<-as.data.frame(rep(dataset.nohcc$labels_hier2,times=2))
+a=data.frame(angio=dataset.nohcc$`fibroscan(m/s)`)
+b=data.frame(angio=dataset.nohcc$`SWE(m/s)`)
+ab=rbind(a,b)
+angio.stiff[,2]<-ab
+f=data.frame(measurement=rep(c("fibroscan"),times=144))
+s=data.frame(measurement=rep(c("SWE"),times=144))
+measurement=rbind(f,s)
+angio.stiff[,3]<-measurement
+colnames(angio.stiff)<-c("angiogenesis","stiffness","measurement")
+angio.stiff<-na.omit(angio.stiff)
+angio.stiff1<-angio.stiff
+angio.stiff1$angiogenesis <- as.character(angio.stiff1$angiogenesis)
+angio.stiff1$angiogenesis[angio.stiff1$angiogenesis == "1"] <- "low"
+angio.stiff1$angiogenesis[angio.stiff1$angiogenesis == "3"] <- "high"
+angio.stiff1$angiogenesis <- as.factor(angio.stiff1$angiogenesis)
+ggboxplot(angio.stiff1, x = "angiogenesis", y = "stiffness", color = "measurement",palette = c("#00AFBB", "#E7B800"))
+
+###boxplot, stiffness vs angio hier3 - no HCC
+angio.stiff3<-as.data.frame(rep(dataset.nohcc$labels_hier3,times=2))
+a=data.frame(angio=dataset.nohcc$`fibroscan(m/s)`)
+b=data.frame(angio=dataset.nohcc$`SWE(m/s)`)
+ab=rbind(a,b)
+angio.stiff3[,2]<-ab
+f=data.frame(measurement=rep(c("fibroscan"),times=144))
+s=data.frame(measurement=rep(c("SWE"),times=144))
+measurement=rbind(f,s)
+angio.stiff3[,3]<-measurement
+colnames(angio.stiff3)<-c("angiogenesis","stiffness","measurement")
+angio.stiff3<-na.omit(angio.stiff3)
+angio.stiff1<-angio.stiff3
+angio.stiff1$angiogenesis <- as.character(angio.stiff1$angiogenesis)
+angio.stiff1$angiogenesis[angio.stiff1$angiogenesis == "1"] <- "low"
+angio.stiff1$angiogenesis[angio.stiff1$angiogenesis == "3"] <- "high"
+angio.stiff1$angiogenesis[angio.stiff1$angiogenesis == "2"] <- "intermediate"
+angio.stiff1$angiogenesis <- as.factor(angio.stiff1$angiogenesis)
+ggboxplot(angio.stiff1, x = "angiogenesis", y = "stiffness", color = "measurement",palette = c("#00AFBB", "#E7B800","#00FF00"))
+
+###correlation test and ANOVA angiogenesis VS liver stiffness
+cor.test(dataset$`fibroscan(m/s)`,dataset$`SWE(m/s)`,method='spearman')
+res.aov2 <- aov(SWResult ~ labels_hier3, data = dataset.nohcc)
+TukeyHSD(res.aov2)
+cor.test(as.numeric(dataset.nohcc$labels_hier2),dataset.nohcc$SWResult,method='spearman')
+
+###new scatter plot fibroscan vs proteins with abline
+cohort.protein<-dataset$Cohort
+cohort.protein<-cbind(dataset$Cohort,dataset$`fibroscan(m/s)` ,dataset$Angiopoietin2_pgml,dataset$IL6_pgml,dataset$IL8_pgml,dataset$uPAR_pgml,dataset$vWFA2_pgml,dataset$Tie2_pgml,dataset$VEGF_pgml,dataset$hcclabel)
+colnames(cohort.protein)<-c("cohort","fibroscan","Angiopoietin","IL6","IL8","uPAR","vWFA2","Tie2","vegf","HCC")
+cohort.protein<-na.omit(cohort.protein)
+cohort.protein<-as.data.frame(cohort.protein)
+write.table(cohort.protein, file="cohort.protein")
+cohort.protein<-read.table("cohort.protein")
+wh<-which(cohort.protein$HCC==0)
+wh1<-which(cohort.protein$HCC==1)
+lm<-lm(cohort.protein[wh,]$fibroscan~cohort.protein[wh,]$Tie2)
+lm1<-lm(cohort.protein$fibroscan~cohort.protein$Tie2)
+plot(cohort.protein$fibroscan~cohort.protein$Tie2,col = cohort.protein$cohort, xlab="Tie2",ylab="fibroscan")
+legend("topleft",title="Cohorts", c("ESD","LSD","Healthy volunteer","HCC"),  fill=c("black", "blue", "green","red"),cex=0.9)
+abline(lm1, col="red")
+abline(lm)
+
+### linear model 
+cohort.protein<-cbind(dataset$Cohort,dataset$Fibroscan,dataset$labels_hier3, dataset$Angiopoietin2_pgml,dataset$IL6_pgml,dataset$IL8_pgml,dataset$uPAR_pgml,dataset$vWFA2_pgml,dataset$Tie2_pgml,dataset$VEGF_pgml)
+colnames(cohort.protein)<-c("cohort","fibroscan","angiogenesis","Angiopoietin","IL6","IL8","uPAR","vWFA2","Tie2","vegf")
+cohort.protein<- as.data.frame(cohort.protein)
+cohort.protein$disease<-NA
+cohort.protein$disease[which(cohort.protein$cohort=="Healthy volunteer")]<-0
+cohort.protein$disease[which(cohort.protein$cohort=="ESD")]<-1
+cohort.protein$disease[which(cohort.protein$cohort=="LSD")]<-2
+attach(cohort.protein)
+summary(glm(disease~fibroscan))
+summary(glm(disease~fibroscan+Angiopoietin))
+summary(glm(disease~fibroscan+angiogenesis+IL8+uPAR+vegf))
+cohort.protein$HCC<-NA
+cohort.protein$HCC[which(cohort.protein$cohort=="HCC")]<-1
+cohort.protein$HCC[which(cohort.protein$cohort!="HCC")]<-0
+cohort.protein<-na.omit(cohort.protein)
+summary(glm(HCC~fibroscan+as.numeric(angiogenesis)+Angiopoietin))
+
+###SVM model
+HCC.angio<-cbind(dataset$Fibroscan,dataset$labels_hier3,dataset$Angiopoietin2_pgml,dataset$Cohort)
+colnames(HCC.angio)<-c("fibroscan","angiogenesis","angiopoietin","cohort")
+HCC.angio<-as.data.frame(HCC.angio)
+HCC.angio$HCC<-NA
+HCC.angio$HCC[which(HCC.angio$cohort=="HCC")]<-c("HCC")
+HCC.angio$HCC[which(HCC.angio$cohort!="HCC")]<-c("non-HCC")
+HCC.angio<-na.omit(HCC.angio)
+HCC.angio$cohort<-NULL
+HCC.angio$fibroscan<-as.numeric(HCC.angio$fibroscan)
+HCC.angio$angiogenesis<-as.numeric(HCC.angio$angiogenesis)
+HCC.angio$angiopoietin<-as.numeric(HCC.angio$angiopoietin)
+HCC.angio$HCC<-as.factor(HCC.angio$HCC)
+install.packages("e1071")
+library(e1071)
+attach(HCC.angio)
+model<-svm(HCC~.,data=HCC.angio,kernel="linear")
+summary(model)
+plot(model,HCC.angio,fibroscan~angiopoietin, slice=list(angigenesis=3))
+
+### cohort VS protein, ANOVA
+cohort.protein<-cbind(dataset$Cohort,dataset$Fibroscan,dataset$Angiopoietin2_pgml,dataset$IL6_pgml,dataset$IL8_pgml,dataset$uPAR_pgml,dataset$vWFA2_pgml,dataset$Tie2_pgml,dataset$VEGF_pgml)
+colnames(cohort.protein)<-c("cohort","fibroscan","Angiopoietin","IL6","IL8","uPAR","vWFA2","Tie2","vegf")
+cohort.protein<-na.omit(cohort.protein)
+cohort.protein<-as.data.frame(cohort.protein)
+write.table(cohort.protein, file="cohort.protein")
+cohort.protein<-read.table("cohort.protein")
+ggboxplot(cohort.protein, x = "cohort", y = "Angiopoietin", 
+color = "cohort", palette = c("#00AFBB", "#E7B800", "#FC4E07","#66CDAA"),
+order = c("ESD", "LSD", "Healthy volunteer", "HCC"),
+ylab = "Angiopoietin", xlab = "Classification")
+res.aov <- aov(Angiopoietin ~ cohort, data = cohort.protein)
+summary(res.aov)
+tuk<-TukeyHSD(res.aov)
+tuk
